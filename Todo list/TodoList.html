@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Interactive To-Do List</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="TodoList.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Interactive To-Do List</h1>
+
+        <div class="add-task-form">
+            <input id="taskInput" type="text" placeholder="Enter a task">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+
+        <div class="themes">
+            <div class="theme" style="background-color: #ffcccc;" onclick="changeTheme('#ffcccc')"></div>
+            <div class="theme" style="background-color: #ccffcc;" onclick="changeTheme('#ccffcc')"></div>
+            <div class="theme" style="background-color: #7cc3ef;" onclick="changeTheme('#7cc3ef')"></div>
+        </div>
+
+        <div class="quote">Success is the BEGINNING not the OUTCOME. </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        var taskList = [];
+
+        function addTask() {
+            var input = document.getElementById("taskInput");
+            var task = input.value.trim();
+
+            if (task === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            taskList.push({
+                task: task,
+                completed: false
+            });
+
+            updateTaskList();
+            input.value = "";
+        }
+
+        function toggleComplete(index) {
+            taskList[index].completed = !taskList[index].completed;
+            updateTaskList();
+        }
+
+        function deleteTask(index) {
+            taskList.splice(index, 1);
+            updateTaskList();
+        }
+
+        function updateTaskList() {
+            var list = document.getElementById("taskList");
+            list.innerHTML = "";
+
+            taskList.forEach(function(task, index) {
+                var li = document.createElement("li");
+                li.classList.add("task");
+
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = task.completed;
+                checkbox.onchange = function() {
+                    toggleComplete(index);
+                };
+                li.appendChild(checkbox);
+
+                var text = document.createElement("span");
+                text.classList.add("text");
+                text.innerText = task.task;
+                if (task.completed) {
+                    text.style.textDecoration = "line-through";
+                    text.style.color = "gray";
+                }
+                li.appendChild(text);
+
+                var deleteButton = document.createElement("span");
+                deleteButton.classList.add("delete-button");
+                deleteButton.innerHTML = "&#x2716;";
+                deleteButton.onclick = function() {
+                    deleteTask(index);
+                };
+                li.appendChild(deleteButton);
+
+                list.appendChild(li);
+            });
+        }
+
+        function changeTheme(color) {
+            var container = document.querySelector(".container");
+            container.style.backgroundColor = color;
+        }
+    </script>
+</body>
+
+</html>
